@@ -3,13 +3,40 @@
  */
 package example.dagger
 
+import dagger.Component
+import javax.inject.Inject
+
 class App {
+    init {
+        DaggerAppComponent.create().inject(this)
+    }
+
+    // 在App类中声明一个成员变量info，并使用Inject注解告诉Dagger这个对象需要注入
+    @Inject
+    lateinit var info : Info
     val greeting: String
         get() {
             return "Hello World!"
         }
 }
 
+/**
+ * 容器类，用于通知Dagger需要注入的对象
+ */
+@Component
+interface AppComponent {
+    fun inject(app: App)
+}
+
+/**
+ * 注入的对象类
+ */
+class Info @Inject constructor() {
+    val greeting = "hello dagger"
+}
+
 fun main() {
     println(App().greeting)
+    // 测试注入是否成功
+    println(App().info.greeting)
 }
